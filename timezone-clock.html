@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Global Digital Clock - Multiple Time Zones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1em;
+            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn.active {
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .format-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .format-btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .format-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .clocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            animation: fadeIn 1s ease 0.4s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .clock-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clock-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #4facfe, #00f2fe);
+            animation: slideRight 3s ease infinite;
+        }
+
+        @keyframes slideRight {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .clock-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .city-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timezone-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .time-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 5px rgba(102, 126, 234, 0.2);
+        }
+
+        .date-display {
+            font-size: 1em;
+            color: #888;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .period {
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #764ba2;
+            text-transform: uppercase;
+        }
+
+        .time-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .time-info div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .time-info label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .clock-card:hover .remove-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .remove-btn:hover {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+
+        .add-timezone {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-timezone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #4facfe, #00f2fe);
+        }
+
+        .add-timezone:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .add-timezone-btn {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .add-timezone:hover .add-timezone-btn {
+            transform: scale(1.2) rotate(90deg);
+        }
+
+        .add-timezone-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-btn-add {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .modal-btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal-btn-cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .clocks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .time-display {
+                font-size: 2.2em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .no-clocks {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Global Digital Clock</h1>
+            <p>✨ Track Time Across Multiple Time Zones ✨</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="addDefaultCities()">📍 Add Default Cities</button>
+            <button class="btn" onclick="clearAllClocks()">🗑️ Clear All</button>
+            <div class="format-toggle">
+                <button class="format-btn active" onclick="setTimeFormat('12h')">12 Hour</button>
+                <button class="format-btn" onclick="setTimeFormat('24h')">24 Hour</button>
+            </div>
+        </div>
+
+        <div class="clocks-grid" id="clocksGrid">
+            <div class="no-clocks">Click "Add Default Cities" to get started! 🚀</div>
+        </div>
+
+        <button class="add-timezone" onclick="openModal()">
+            <div class="add-timezone-btn">+</div>
+            <div class="add-timezone-text">Add Timezone</div>
+        </button>
+
+        <div class="footer">
+            <p>⏰ Real-time clock | 🌐 Multiple timezones | 📱 Fully Responsive</p>
+        </div>
+    </div>
+
+    <!-- Modal for adding timezone -->
+    <div class="modal" id="timezoneModal">
+        <div class="modal-content">
+            <div class="modal-header">Add New Timezone</div>
+            <select class="modal-select" id="timezoneSelect">
+                <option value="">Select a timezone...</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-add" onclick="addTimezone()">Add</button>
+                <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timezone data
+        const timezones = {
+            'UTC': { name: '🌍 UTC', offset: 0 },
+            'America/New_York': { name: '🗽 New York', offset: -5 },
+            'America/Chicago': { name: '⭐ Chicago', offset: -6 },
+            'America/Denver': { name: '🏔️ Denver', offset: -7 },
+            'America/Los_Angeles': { name: '🌴 Los Angeles', offset: -8 },
+            'America/Anchorage': { name: '❄️ Anchorage', offset: -9 },
+            'Pacific/Honolulu': { name: '🌺 Honolulu', offset: -10 },
+            'Europe/London': { name: '🇬🇧 London', offset: 0 },
+            'Europe/Paris': { name: '🇫🇷 Paris', offset: 1 },
+            'Europe/Berlin': { name: '🇩🇪 Berlin', offset: 1 },
+            'Europe/Moscow': { name: '🇷🇺 Moscow', offset: 3 },
+            'Asia/Dubai': { name: '🏙️ Dubai', offset: 4 },
+            'Asia/Kolkata': { name: '🇮🇳 India', offset: 5.5 },
+            'Asia/Bangkok': { name: '🇹🇭 Bangkok', offset: 7 },
+            'Asia/Hong_Kong': { name: '🇭🇰 Hong Kong', offset: 8 },
+            'Asia/Shanghai': { name: '🇨🇳 Shanghai', offset: 8 },
+            'Asia/Singapore': { name: '🇸🇬 Singapore', offset: 8 },
+            'Asia/Tokyo': { name: '🇯🇵 Tokyo', offset: 9 },
+            'Asia/Seoul': { name: '🇰🇷 Seoul', offset: 9 },
+            'Australia/Sydney': { name: '🇦🇺 Sydney', offset: 11 },
+            'Pacific/Auckland': { name: '🇳🇿 Auckland', offset: 13 },
+            'America/Toronto': { name: '🇨🇦 Toronto', offset: -5 },
+            'America/Mexico_City': { name: '🇲🇽 Mexico City', offset: -6 },
+            'America/Sao_Paulo': { name: '🇧🇷 São Paulo', offset: -3 },
+            'America/Buenos_Aires': { name: '🇦🇷 Buenos Aires', offset: -3 },
+            'Africa/Cairo': { name: '🇪🇬 Cairo', offset: 2 },
+            'Africa/Johannesburg': { name: '🇿🇦 Johannesburg', offset: 2 },
+            'Asia/Karachi': { name: '🇵🇰 Karachi', offset: 5 },
+            'Asia/Jakarta': { name: '🇮🇩 Jakarta', offset: 7 },
+            'Asia/Manila': { name: '🇵🇭 Manila', offset: 8 },
+            'Australia/Melbourne': { name: '🇦🇺 Melbourne', offset: 11 },
+        };
+
+        let activeClocks = [];
+        let timeFormat = '12h';
+        let updateInterval;
+
+        // Initialize timezone select dropdown
+        function initializeTimezoneSelect() {
+            const select = document.getElementById('timezoneSelect');
+            Object.entries(timezones).forEach(([tz, data]) => {
+                const option = document.createElement('option');
+                option.value = tz;
+                option.textContent = `${data.name} (${tz})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Update all clocks
+        function updateClocks() {
+            activeClocks.forEach(tz => {
+                const clockElement = document.getElementById(`clock-${tz}`);
+                if (clockElement) {
+                    updateClock(tz, clockElement);
+                }
+            });
+        }
+
+        // Update single clock
+        function updateClock(tz, element) {
+            const now = new Date();
+            const utcTime = new Date(now.toLocaleString('en-US', { timeZone: 'UTC' }));
+            const tzTime = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+            
+            const hours = String(tzTime.getHours()).padStart(2, '0');
+            const minutes = String(tzTime.getMinutes()).padStart(2, '0');
+            const seconds = String(tzTime.getSeconds()).padStart(2, '0');
+
+            let timeString;
+            let period = '';
+
+            if (timeFormat === '12h') {
+                const h = parseInt(hours);
+                period = h >= 12 ? 'PM' : 'AM';
+                const displayHours = String(h % 12 || 12).padStart(2, '0');
+                timeString = `${displayHours}:${minutes}:${seconds}`;
+            } else {
+                timeString = `${hours}:${minutes}:${seconds}`;
+            }
+
+            const timeDisplay = element.querySelector('.time-display');
+            const periodDisplay = element.querySelector('.period');
+            const dateDisplay = element.querySelector('.date-display');
+
+            timeDisplay.textContent = timeString;
+            if (periodDisplay) periodDisplay.textContent = period;
+
+            // Format date
+            const dateOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+            const dateStr = tzTime.toLocaleDateString('en-US', dateOptions);
+            if (dateDisplay) dateDisplay.textContent = dateStr;
+
+            // Update additional info
+            const offset = timezones[tz].offset;
+            const sign = offset >= 0 ? '+' : '';
+            element.querySelector('.timezone-offset').textContent = `UTC ${sign}${offset}`;
+        }
+
+        // Add clock to grid
+        function addClock(tz) {
+            if (activeClocks.includes(tz)) return;
+            
+            activeClocks.push(tz);
+            renderClocks();
+        }
+
+        // Remove clock
+        function removeClock(tz) {
+            activeClocks = activeClocks.filter(t => t !== tz);
+            renderClocks();
+        }
+
+        // Render all clocks
+        function renderClocks() {
+            const grid = document.getElementById('clocksGrid');
+            
+            if (activeClocks.length === 0) {
+                grid.innerHTML = '<div class="no-clocks">Click "Add Default Cities" or "Add Timezone" to get started! 🚀</div>';
+                return;
+            }
+
+            grid.innerHTML = activeClocks.map(tz => `
+                <div class="clock-card" id="clock-${tz}">
+                    <button class="remove-btn" onclick="removeClock('${tz}')">×</button>
+                    <div class="city-name">${timezones[tz].name}</div>
+                    <div class="timezone-label"><span class="timezone-offset">UTC +0</span></div>
+                    <div class="time-display">00:00:00</div>
+                    <div class="date-display">Loading...</div>
+                    <div class="period"></div>
+                    <div class="time-info">
+                        <div>
+                            <label>Day of Week:</label>
+                            <span id="dow-${tz}">-</span>
+                        </div>
+                        <div>
+                            <label>Unix Time:</label>
+                            <span id="unix-${tz}">-</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            updateClocks();
+        }
+
+        // Add default cities
+        function addDefaultCities() {
+            activeClocks = [
+                'America/New_York',
+                'Europe/London',
+                'Asia/Tokyo',
+                'Australia/Sydney',
+                'America/Los_Angeles',
+                'Asia/Dubai'
+            ];
+            renderClocks();
+        }
+
+        // Clear all clocks
+        function clearAllClocks() {
+            if (confirm('Are you sure you want to clear all clocks?')) {
+                activeClocks = [];
+                renderClocks();
+            }
+        }
+
+        // Set time format
+        function setTimeFormat(format) {
+            timeFormat = format;
+            document.querySelectorAll('.format-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            updateClocks();
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('timezoneModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('timezoneModal').classList.remove('show');
+        }
+
+        function addTimezone() {
+            const tz = document.getElementById('timezoneSelect').value;
+            if (tz) {
+                addClock(tz);
+                closeModal();
+                document.getElementById('timezoneSelect').value = '';
+            }
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('timezoneModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTimezoneSelect();
+            updateClocks();
+            updateInterval = setInterval(updateClocks, 1000);
+        });
+
+        // Cleanup
+        window.addEventListener('beforeunload', function() {
+            clearInterval(updateInterval);
+        });
+    </script>
+</body>
+</html>
