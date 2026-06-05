@@ -154,6 +154,98 @@ await dashboard.toggleInvisible();
 
 ---
 
+## 📦 Additional Projects & Tools
+
+This repository includes several useful utility tools and demonstrations:
+
+### 🌍 Global Digital Clock
+**File:** [`timezone-clock.html`](timezone-clock.html)
+
+A beautiful, animated digital clock that displays the current time in **30+ major timezones** across the globe.
+
+**Features:**
+- ⏰ Real-time digital clock with seconds precision
+- 🌍 30+ major world timezones (NYC, London, Tokyo, Sydney, Dubai, etc.)
+- 🔄 Toggle between 12-hour and 24-hour formats
+- 📅 Date display for each timezone
+- ⏱️ Unix timestamp for each timezone
+- ➕ Add/remove timezones dynamically
+- 📍 Quick add button for default major cities
+- 🎨 Beautiful animated gradient background
+- 📱 Fully responsive design
+- 🚀 Real-time updates every second
+
+**Usage:**
+- Open the file directly in your browser
+- Click **"Add Default Cities"** to populate major timezones
+- Click **"Add Timezone"** to select specific timezones
+- Toggle between **12h/24h** format
+- Hover over a clock to remove it
+
+**Try it:** [Open timezone-clock.html](https://raw.githubusercontent.com/Bilal11176/whatsapp-bot-dashboard-v1/main/timezone-clock.html)
+
+---
+
+### 📖 Enhanced README
+**File:** [`README.md`](README.md)
+
+A stylish, animated README with:
+- ✨ Modern design with emojis and badges
+- 🎨 Organized sections with tables and boxes
+- 📊 Visual statistics and badges
+- 🚀 Quick start guides
+- 🔒 Security highlights
+- 📱 Responsive formatting
+
+---
+
+## 🎯 Project Structure
+
+```
+whatsapp-bot-dashboard-v1/
+├── README.md                 # 📖 Stylish project documentation
+├── timezone-clock.html       # 🌍 Global digital clock
+├── package.json              # 📦 Dependencies
+├── src/                      # 💻 Source code
+│   ├── index.js
+│   ├── dashboard.js
+│   └── bot-controller.js
+└── assets/                   # 🎨 Images & styles
+```
+
+---
+
+## 🚀 Getting Started with Tools
+
+### Using the Global Clock
+
+```html
+<!-- Simply open in browser -->
+<a href="timezone-clock.html">Open Global Clock</a>
+```
+
+**Supported Timezones Include:**
+- 🗽 Americas: New York, Chicago, Denver, LA, Toronto, Mexico City, São Paulo, Buenos Aires
+- 🇪🇺 Europe: London, Paris, Berlin, Moscow
+- 🌏 Asia: Dubai, India, Bangkok, Hong Kong, Shanghai, Singapore, Tokyo, Seoul, Karachi, Jakarta, Manila
+- 🏝️ Pacific: Sydney, Auckland, Honolulu
+- 🌍 Africa: Cairo, Johannesburg
+- And more!
+
+---
+
+## 💡 Features Comparison
+
+| Feature | Dashboard | Clock | README |
+|---------|-----------|-------|--------|
+| Real-time Updates | ✅ | ✅ | ✅ |
+| Multiple Timezones | ✅ | ✅ | ✅ |
+| Responsive Design | ✅ | ✅ | ✅ |
+| Animated UI | ✅ | ✅ | ✅ |
+| Easy to Use | ✅ | ✅ | ✅ |
+
+---
+
 ## 🤝 Support & Contribution
 
 <div align="center">
@@ -178,6 +270,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - WhatsApp Bot Community
 - Contributors & Maintainers
 - All users & supporters
+- Timezone community standards
 
 ---
 
@@ -188,5 +281,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ⭐ **If this project helped you, please consider giving it a star!** ⭐
 
 ![](https://komarev.com/ghpvc/?username=Bilal11176&color=blueviolet&style=flat-square&label=Profile+Views)
+
+**Last Updated:** June 5, 2026
 
 </div>
