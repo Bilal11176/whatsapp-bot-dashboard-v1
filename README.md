@@ -355,7 +355,7 @@ Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
 
 <br/>
 
-**Owner:** `+93795430668`
+**Owner:** `@darknetninjas`
 
 ![Profile Views](https://komarev.com/ghpvc/?username=Bilal11176&color=00ff88&style=for-the-badge&label=PROFILE+VIEWS)
 
